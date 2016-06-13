@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Python - To-Do-List</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="{{ url_for('static', 
+	filename='css/bootstrap.min.css') }}" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', 
+	filename='css/stylish-portfolio.css') }}" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="{{ url_for('static', 
+	filename='font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+	
+	<!-- DataTables CSS -->
+    <link href="{{ url_for('static', 
+	filename='bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css') }}" rel="stylesheet">
+
+    <!-- DataTables Responsive CSS -->
+    <link href="{{ url_for('static',
+	filename='bower_components/datatables-responsive/css/dataTables.responsive.css') }}" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <a id="menu-toggle" href="#" class="btn btn-dark btn-lg toggle"><i class="fa fa-bars"></i></a>
+    <nav id="sidebar-wrapper">
+        <ul class="sidebar-nav">
+            <a id="menu-close" href="#" class="btn btn-light btn-lg pull-right toggle"><i class="fa fa-times"></i></a>
+            <li class="sidebar-brand">
+                <a href="#top"  onclick = $("#menu-close").click(); >To-Do-List</a>
+            </li>
+            <li>
+                <a href="#top" onclick = $("#menu-close").click(); >Your  Activities</a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Header -->
+    <header id="top" class="header">
+        <div class="text-vertical-center">
+            <h1>TO-DO-LIST</h1>
+			<h3>Changed Your Mind?</h3>
+			<form class = "form-inline">
+				<div class="form-group">
+					<div class="col-lg-12">
+					<!-- <textarea class="form-control" rows="3" id="activity" name="activity"></textarea><br> -->
+					<input type="text" class="form-control" value="{{ task.activity }}" id="activity" name="activity">
+					</div>
+				</div>
+				<div class="formgroup">
+					<br><input type="date" class="form-control" value="{{ task.date }}" id="date" name="date">
+					<!-- <input type="text" class="form-control" id="date" name="date"> -->
+				</div>
+				<div class="formgroup">
+					<br><input type="hidden" name="id" value="{{ task.id }}">
+				</div>
+			<button type="submit" class="btn btn-primary btn-lg" id="update_input">Edit Activity</button>
+			<a href="{{ url_for('index') }}"><button type="button" class="btn btn-danger btn-lg" id="back_button">Back</button></a>
+			</form>
+    </header>
+	
+	<!-- MODAL -->
+
+    <!-- jQuery -->
+    <script src="{{ url_for('static', 
+	filename='js/jquery.js') }}"></script>
+	<script src="{{ url_for('static', 
+	filename='bower_components/jquery/dist/jquery.min.js') }}"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <!-- <script src="{{ url_for('static',
+	filename='js/bootstrap.min.js') }}"></script> -->
+	<script src="{{ url_for('static', 
+	filename='bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+	
+	<!-- DataTables JavaScript -->
+    <script src="{{ url_for('static', 
+	filename='bower_components/datatables/media/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ url_for('static', 
+	filename='bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', 
+	filename='bower_components/datatables-responsive/js/dataTables.responsive.js') }}"></script>
+	
+	<!-- EDIT -->
+	<script type=text/javascript>
+       $(function() {
+         $('#update_input').bind('click',  
+           function() { 
+               $.getJSON('/edittask', {
+				 activity: $('input[name="activity"]').val(),
+                 date: $('input[name="date"]').val(),
+				 id: $('input[name="id"]').val(),
+           },  
+           function(data) {
+             $("#result").text(data.result);
+             $("form")[0].reset();
+           });
+
+		   window.location.href="http://localhost:5000";
+           return false;
+		   
+         });
+       });
+   </script>
+   
+   <!-- BACK
+	<script type=text/javascript>
+	$("#back_button").click(function() {
+		window.location="http://localhost:5000";
+	});
+	</script> -->
+	
+    <!-- Custom Theme JavaScript -->
+    <script>
+    // Closes the sidebar menu
+    $("#menu-close").click(function(e) {
+        e.preventDefault();
+        $("#sidebar-wrapper").toggleClass("active");
+    });
+
+    // Opens the sidebar menu
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#sidebar-wrapper").toggleClass("active");
+    });
+
+    // Scrolls to the selected menu item on the page
+    $(function() {
+        $('a[href*=#]:not([href=#])').click(function() {
+            if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') || location.hostname == this.hostname) {
+
+                var target = $(this.hash);
+                target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+                if (target.length) {
+                    $('html,body').animate({
+                        scrollTop: target.offset().top
+                    }, 1000);
+                    return false;
+                }
+            }
+        });
+    });
+	
+	$(document).ready(function() {
+        $('#dataTables-example').DataTable({
+                responsive: true
+        });
+    });
+	
+    </script>
+
+</body>
+
+</html>
